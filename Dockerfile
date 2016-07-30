@@ -47,10 +47,10 @@ EXPOSE 6666
 WORKDIR ${MUD_HOME}/ds
 
 # Lib directory is a volume, so configuration and build history can be persisted and survive restarts
-VOLUME /home/mud/lib
+VOLUME ${MUD_HOME}/ds/lib
 
 # On startup, we check to see if the lib directory is empty (i.e., if it's been volumed
-# over. If so, we refil it from the tar file.
+# over). If so, we refill it from the tar file.
 CMD if [ $(/bin/ls -A lib | wc -l) -eq 0 ]; then mv lib.tgz lib; cd lib; tar xfz lib.tgz; rm lib.tgz; cd ..; fi \
    && ./bin/driver /home/mud/ds/bin/mudos.cfg
 
