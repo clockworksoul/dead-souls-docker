@@ -2,9 +2,9 @@ version: '2'
 
 services:
   darksouls:
-    image: clockworksoul/dark-souls:latest
+    image: clockworksoul/dead-souls:latest
     ports:
       - 6666:6666
     volumes:
-      - ./lib/:/home/mud/ds3.8.6/lib/
+      - ./lib/:/home/mud/ds/lib/
     restart: always

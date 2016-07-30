@@ -19,21 +19,38 @@ USER mud
 
 WORKDIR ${MUD_HOME}
 
+# Get the MUD source from the Dead Souls site
 RUN wget ${MUD_DOWNLOAD_URL} \
    && unzip ds${MUD_VERSION}.zip \
-   && rm ds${MUD_VERSION}.zip
+   && rm ds${MUD_VERSION}.zip \
+   && mv ds${MUD_VERSION} ds \
+   && rm -Rf ds/win32 \
+   && rm ds/runmud.bat 
 
-WORKDIR /home/mud/ds${MUD_VERSION}/fluffos-2.23-ds03 
+# Tar up the /lib directory. If the lib directory is found to be empty (if it is volumed, for example),
+# then it will be filled from here.
+
+WORKDIR ${MUD_HOME}/ds/lib
+
+RUN tar cfz lib.tgz * \
+   && mv lib.tgz ..
+
+# Build the MUD driver from source (TODO: I'm pretty sure we can remove this afterwards)
+
+WORKDIR ${MUD_HOME}/ds/fluffos-2.23-ds03 
 
 RUN ./configure \
    && make install
 
 EXPOSE 6666
 
-WORKDIR /home/mud/ds${MUD_VERSION}/bin
+WORKDIR ${MUD_HOME}/ds
 
 # Lib directory is a volume, so configuration and build history can be persisted and survive restarts
-VOLUME /home/mud/ds${MUD_VERSION}/lib
+VOLUME /home/mud/lib
 
-CMD ./driver /home/mud/ds${MUD_VERSION}/bin/mudos.cfg
+# On startup, we check to see if the lib directory is empty (i.e., if it's been volumed
+# over. If so, we refil it from the tar file.
+CMD if [ $(/bin/ls -A lib | wc -l) -eq 0 ]; then mv lib.tgz lib; cd lib; tar xfz lib.tgz; rm lib.tgz; cd ..; fi \
+   && ./bin/driver /home/mud/ds/bin/mudos.cfg
 
