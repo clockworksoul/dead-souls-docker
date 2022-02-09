@@ -5,7 +5,7 @@ This is an image wrapping a basic installation of the Dead Souls LPMud. See http
 ## Deployment
 
 1. Make sure that you have [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
-2. Download the Compose file: `wget https://raw.githubusercontent.com/ClockworkSoul/dead-souls-docker/master/docker-compose.yml`
+2. Download the Compose file: `wget https://raw.githubusercontent.com/clockworksoul/dead-souls-docker/master/docker-compose.yml`
 3. Deploy the MUD: `docker-compose up -d`
 4. Connect to your MUD: `telnet localhost 6666`
 
